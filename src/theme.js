@@ -1,11 +1,4 @@
 export const theme = {
-  colors: {
-    mainText: '#000000',
-    mainBg: '#eba2a3',
-    secondaryBg: '#f7e1d0',
-    filterBg: '#fef5ee',
-    buttonBg: '#b94e58',
-  },
   space: [0, '2px', '4px', '8px', '16px', '32px', '64px', '128px', '256px'],
   fontWeights: {
     normal: 400,

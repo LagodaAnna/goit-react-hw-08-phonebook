@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import ContactListItem from './ContactListItem';
-import { List } from './Contacts.styled';
 import { useSelector, useDispatch } from 'react-redux';
-import { getContacts, getChangedFilter } from 'redux/contactsSlice';
-import * as contactsOperations from 'redux/contactsOperations.js';
+import { contactsOperations, contactsSelectors } from 'redux/contacts';
+import { ListGroup } from 'react-bootstrap';
 
 const ContactList = () => {
-  const filter = useSelector(getChangedFilter);
-  const contacts = useSelector(getContacts);
+  const filter = useSelector(contactsSelectors.getChangedFilter);
+  const contacts = useSelector(contactsSelectors.getContacts);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,8 +28,8 @@ const ContactList = () => {
 
   return (
     <>
-      {visibleContacts.length > 0 && (
-        <List>
+      {visibleContacts.length > 0 ? (
+        <ListGroup as="ul">
           {visibleContacts.map(({ id, name, number }) => {
             return (
               <ContactListItem
@@ -42,7 +41,9 @@ const ContactList = () => {
               />
             );
           })}
-        </List>
+        </ListGroup>
+      ) : (
+        <div className="fw-bold ps-5">No contacts</div>
       )}
     </>
   );

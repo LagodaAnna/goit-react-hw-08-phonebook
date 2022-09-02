@@ -1,32 +1,69 @@
-import ContactForm from './ContactForm';
-import Filter from './Filter';
-import ContactList from './Contacts';
-import Box from './Box';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PrivateRoute from './PrivateRoute';
+import RestrictedRoute from './RestrictedRoute';
+import RegisterView from 'pages/RegisterView';
+import LoginView from 'pages/LoginView';
+import ContactsView from 'pages/ContactsView';
+import AppBar from './AppBar';
+import { authOperations, authSelectors } from 'redux/auth';
 
 export const App = () => {
-  return (
-    <Box
-      width="60%"
-      minHeight="100vh"
-      my={0}
-      mx="auto"
-      p={4}
-      display="flex"
-      flexDirection="column"
-      alignItems="stretch"
-      bg="mainBg"
-      borderRadius="normal"
-    >
-      <Box mb={6} p={4} bg="secondaryBg" borderRadius="normal">
-        <h1>Phonebook</h1>
-        <ContactForm />
-        <Filter />
-      </Box>
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(authSelectors.getIsLoggedIn);
+  const isLoading = useSelector(authSelectors.getIsLoading);
 
-      <Box p={4} minHeight="250px" bg="secondaryBg" borderRadius="normal">
-        <h2>Contacts</h2>
-        <ContactList />
-      </Box>
-    </Box>
+  useEffect(() => {
+    dispatch(authOperations.refreshCurrentUser());
+  }, [dispatch]);
+
+  return (
+    <>
+      {!isLoading && (
+        <>
+          <AppBar />
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+
+            <Route
+              path="/register"
+              element={
+                <RestrictedRoute isLoggedIn={isLoggedIn}>
+                  <RegisterView />
+                </RestrictedRoute>
+              }
+            />
+
+            <Route
+              path="/login"
+              element={
+                <RestrictedRoute isLoggedIn={isLoggedIn}>
+                  <LoginView />
+                </RestrictedRoute>
+              }
+            />
+
+            <Route
+              path="/contacts"
+              element={
+                <PrivateRoute isLoggedIn={isLoggedIn}>
+                  <ContactsView />
+                </PrivateRoute>
+              }
+            ></Route>
+
+            <Route
+              path="*"
+              element={
+                <PrivateRoute isLoggedIn={isLoggedIn}>
+                  <ContactsView />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </>
+      )}
+    </>
   );
 };

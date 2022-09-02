@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid';
-import { Form, Label, FieldWrapper, Input, Button } from './ContactForm.styled';
-import { getContacts } from 'redux/contactsSlice';
-import * as contactsOperations from 'redux/contactsOperations.js';
+import { contactsOperations, contactsSelectors } from 'redux/contacts';
+import { Container, Button, Form } from 'react-bootstrap';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(contactsSelectors.getContacts);
 
   const checkDuplicates = name => {
     const allNames = contacts.map(contact => contact.name);
 
     if (allNames.includes(name)) {
-      alert(`${name} is already in contacts`);
+      Notify.failure(`${name} is already in contacts`);
       return true;
     }
   };
@@ -51,35 +51,53 @@ const ContactForm = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <FieldWrapper>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-          value={name}
-          onChange={handleChange}
-        />
-      </FieldWrapper>
+    <Container
+      fluid
+      className="border-bottom border-2 border-secondary pb-4 mb-4"
+    >
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="d-flex align-items-baseline mb-3">
+          <Form.Label
+            htmlFor="name"
+            className="me-5 fs-5 fw-bold text-secondary"
+            style={{ minWidth: '70px' }}
+          >
+            Name
+          </Form.Label>
+          <Form.Control
+            type="text"
+            name="name"
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            required
+            value={name}
+            onChange={handleChange}
+          />
+        </Form.Group>
 
-      <FieldWrapper>
-        <Label htmlFor="number">Number</Label>
-        <Input
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-          value={number}
-          onChange={handleChange}
-        />
-      </FieldWrapper>
-
-      <Button type="submit">Add contact</Button>
-    </Form>
+        <Form.Group className="d-flex align-items-baseline mb-3">
+          <Form.Label
+            htmlFor="number"
+            className="me-5 fs-5 fw-bold text-secondary"
+            style={{ minWidth: '70px' }}
+          >
+            Number
+          </Form.Label>
+          <Form.Control
+            type="tel"
+            name="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+            value={number}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Button type="submit" className="ms-auto d-block">
+          Add contact
+        </Button>
+      </Form>
+    </Container>
   );
 };
 
