@@ -7,8 +7,8 @@ const ContactsView = () => {
   return (
     <Container
       as="main"
-      className="shadow p-5 mb-5"
-      style={{ minHeight: '70vh', backgroundColor: '#00fa9a65' }}
+      className="shadow p-5 mb-5 "
+      style={{ minHeight: '70vh', backgroundColor: '#caf7df' }}
     >
       <Row>
         <Col></Col>
